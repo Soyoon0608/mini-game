@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>우주 장애물 피하기</title>
+    <title>🚀 우주 장애물 피하기</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,7 +17,7 @@
         <h1>🚀 우주 장애물 피하기</h1>
 
         <p>← → 방향키로 우주선을 움직이세요!</p>
-        <p>20초 동안 운석을 피하면 성공합니다.</p>
+        <p>20초 동안 장애물을 피하면 성공합니다.</p>
 
         <div id="game">
 
@@ -33,25 +33,41 @@
 
             <!-- 플레이어 우주선 -->
             <div id="player">
+
                 <div class="plane-body"></div>
+
                 <div class="wing-left"></div>
+
                 <div class="wing-right"></div>
+
                 <div class="engine"></div>
+
             </div>
 
-            <!-- 운석 -->
-            <div id="obstacle">☄️</div>
+            <!-- 장애물 -->
+            <div id="obstacle"></div>
 
         </div>
 
-        <div id="status">게임 준비</div>
+        <div id="status">
+            게임 준비
+        </div>
 
         <div class="button-container">
-            <button id="startButton">게임 시작</button>
-            <button id="pauseButton">일시정지</button>
+
+            <button id="startButton">
+                게임 시작
+            </button>
+
+            <button id="pauseButton">
+                일시정지
+            </button>
+
         </div>
 
-        <p>R 키: 다시 시작 / P 키: 일시정지</p>
+        <p>
+            R 키: 다시 시작 / P 키: 일시정지
+        </p>
 
     </div>
 
