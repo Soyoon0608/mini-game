@@ -21,11 +21,9 @@ let obstacleX = 100;
 
 let obstacleY = -40;
 
-
 let gameRunning = false;
 
 let gamePaused = false;
-
 
 let startTime = 0;
 
@@ -34,13 +32,13 @@ let pausedTime = 0;
 let totalPausedTime = 0;
 
 
-/* 게임 시간 = 20초 */
+/* 게임 시간 20초 */
 
 const gameTime = 20000;
 
 
 /* =========================
-   플레이어 최대 위치
+   플레이어 최대 X
 ========================= */
 
 function getMaxPlayerX() {
@@ -59,7 +57,7 @@ function getMaxPlayerX() {
 
 function startGame() {
 
-    /* 플레이어 가운데 배치 */
+    /* 플레이어 가운데 */
 
     playerX =
         (
@@ -80,7 +78,7 @@ function startGame() {
         );
 
 
-    /* 장애물은 게임 화면 위에서 시작 */
+    /* 장애물은 위에서 시작 */
 
     obstacleY =
         -obstacle.offsetHeight;
@@ -149,7 +147,7 @@ function gameLoop() {
     }
 
 
-    /* 실제 게임 경과 시간 */
+    /* 게임 경과 시간 */
 
     const elapsed =
         Date.now()
@@ -177,7 +175,7 @@ function gameLoop() {
         "초";
 
 
-    /* 20초 생존 성공 */
+    /* 20초 성공 */
 
     if (elapsed >= gameTime) {
 
@@ -195,7 +193,7 @@ function gameLoop() {
     obstacleY += 5;
 
 
-    /* 장애물이 아래로 지나가면
+    /* 장애물이 화면 아래로 지나가면
        다시 위에서 생성 */
 
     if (
@@ -247,7 +245,6 @@ function gameLoop() {
 
 function checkCollision() {
 
-
     const playerLeft =
         playerX;
 
@@ -288,23 +285,13 @@ function checkCollision() {
 
     if (
 
-        playerLeft <
-        obstacleRight
+        playerLeft < obstacleRight &&
 
-        &&
+        playerRight > obstacleLeft &&
 
-        playerRight >
-        obstacleLeft
+        playerTop < obstacleBottom &&
 
-        &&
-
-        playerTop <
-        obstacleBottom
-
-        &&
-
-        playerBottom >
-        obstacleTop
+        playerBottom > obstacleTop
 
     ) {
 
@@ -418,7 +405,7 @@ function togglePause() {
 
 
 /* =========================
-   키보드
+   키보드 입력
 ========================= */
 
 document.addEventListener(
@@ -426,7 +413,7 @@ document.addEventListener(
     function(event) {
 
 
-        /* R = 다시 시작 */
+        /* R = 재시작 */
 
         if (
             event.key.toLowerCase() === "r"
@@ -452,7 +439,8 @@ document.addEventListener(
         }
 
 
-        /* 게임 중이 아니면 무시 */
+        /* 게임 중이 아니거나
+           일시정지 상태면 무시 */
 
         if (
             !gameRunning ||
@@ -570,7 +558,6 @@ window.addEventListener(
     "resize",
     function() {
 
-
         if (!gameRunning) {
 
             return;
@@ -578,12 +565,11 @@ window.addEventListener(
         }
 
 
+        /* 플레이어 경계 */
+
         const maxPlayerX =
             getMaxPlayerX();
 
-
-        /* 플레이어가 화면 밖으로
-           나가지 않도록 보정 */
 
         if (
             playerX >
@@ -603,7 +589,7 @@ window.addEventListener(
         }
 
 
-        /* 장애물 위치 보정 */
+        /* 장애물 경계 */
 
         const maxObstacleX =
             game.clientWidth -
@@ -638,7 +624,6 @@ window.addEventListener(
 document.addEventListener(
     "visibilitychange",
     function() {
-
 
         if (!gameRunning) {
 
