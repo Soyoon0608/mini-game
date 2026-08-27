@@ -1,130 +1,233 @@
 const game = document.getElementById("game");
+
 const player = document.getElementById("player");
+
 const obstacle = document.getElementById("obstacle");
+
 const statusText = document.getElementById("status");
+
 const startButton = document.getElementById("startButton");
+
 const pauseButton = document.getElementById("pauseButton");
 
+
+/* =========================
+   게임 변수
+========================= */
+
 let playerX = 0;
+
 let obstacleX = 100;
+
 let obstacleY = -40;
 
+
 let gameRunning = false;
+
 let gamePaused = false;
 
+
 let startTime = 0;
+
 let pausedTime = 0;
+
 let totalPausedTime = 0;
+
+
+/* 게임 시간 = 20초 */
 
 const gameTime = 20000;
 
 
-// 플레이어가 이동할 수 있는 최대 X
+/* =========================
+   플레이어 최대 위치
+========================= */
+
 function getMaxPlayerX() {
 
-    return game.clientWidth - player.offsetWidth;
+    return (
+        game.clientWidth -
+        player.offsetWidth
+    );
 
 }
 
 
-// 게임 시작
+/* =========================
+   게임 시작
+========================= */
+
 function startGame() {
 
+    /* 플레이어 가운데 배치 */
+
     playerX =
-        (game.clientWidth - player.offsetWidth) / 2;
+        (
+            game.clientWidth -
+            player.offsetWidth
+        ) / 2;
+
+
+    /* 장애물 랜덤 위치 */
 
     obstacleX =
         Math.floor(
             Math.random() *
-            (game.clientWidth - obstacle.offsetWidth)
+            (
+                game.clientWidth -
+                obstacle.offsetWidth
+            )
         );
 
-    obstacleY = -obstacle.offsetHeight;
+
+    /* 장애물은 게임 화면 위에서 시작 */
+
+    obstacleY =
+        -obstacle.offsetHeight;
+
 
     gameRunning = true;
+
     gamePaused = false;
+
 
     startTime = Date.now();
 
     pausedTime = 0;
+
     totalPausedTime = 0;
 
-    player.style.left = playerX + "px";
 
-    obstacle.style.left = obstacleX + "px";
-    obstacle.style.top = obstacleY + "px";
+    /* 화면에 위치 적용 */
 
-    statusText.textContent = "남은 시간: 20초";
+    player.style.left =
+        playerX + "px";
 
-    pauseButton.textContent = "일시정지";
+
+    obstacle.style.left =
+        obstacleX + "px";
+
+
+    obstacle.style.top =
+        obstacleY + "px";
+
+
+    statusText.textContent =
+        "남은 시간: 20초";
+
+
+    pauseButton.textContent =
+        "일시정지";
+
 
     requestAnimationFrame(gameLoop);
+
 }
 
 
-// 게임 루프
+/* =========================
+   게임 루프
+========================= */
+
 function gameLoop() {
 
     if (!gameRunning) {
+
         return;
+
     }
+
+
+    /* 일시정지 */
 
     if (gamePaused) {
+
         requestAnimationFrame(gameLoop);
+
         return;
+
     }
 
+
+    /* 실제 게임 경과 시간 */
+
     const elapsed =
-        Date.now() -
-        startTime -
-        totalPausedTime;
+        Date.now()
+        - startTime
+        - totalPausedTime;
+
+
+    /* 남은 시간 */
 
     const remaining =
         Math.max(
             0,
             Math.ceil(
-                (gameTime - elapsed) / 1000
+                (
+                    gameTime -
+                    elapsed
+                ) / 1000
             )
         );
 
+
     statusText.textContent =
-        "남은 시간: " + remaining + "초";
+        "남은 시간: " +
+        remaining +
+        "초";
 
 
-    // 20초 생존
+    /* 20초 생존 성공 */
+
     if (elapsed >= gameTime) {
 
         success();
 
         return;
+
     }
 
 
-    // 운석 이동
+    /* =========================
+       장애물 이동
+    ========================= */
+
     obstacleY += 5;
 
 
-    // 운석이 아래로 지나감
-    if (obstacleY > game.clientHeight) {
+    /* 장애물이 아래로 지나가면
+       다시 위에서 생성 */
+
+    if (
+        obstacleY >
+        game.clientHeight
+    ) {
 
         obstacleY =
             -obstacle.offsetHeight;
 
+
         obstacleX =
             Math.floor(
                 Math.random() *
-                (game.clientWidth -
-                 obstacle.offsetWidth)
+                (
+                    game.clientWidth -
+                    obstacle.offsetWidth
+                )
             );
+
 
         obstacle.style.left =
             obstacleX + "px";
+
     }
 
 
     obstacle.style.top =
         obstacleY + "px";
 
+
+    /* 충돌 검사 */
 
     checkCollision();
 
@@ -138,13 +241,20 @@ function gameLoop() {
 }
 
 
-// 충돌 검사
+/* =========================
+   충돌 검사
+========================= */
+
 function checkCollision() {
 
-    const playerLeft = playerX;
+
+    const playerLeft =
+        playerX;
+
 
     const playerRight =
-        playerX + player.offsetWidth;
+        playerX +
+        player.offsetWidth;
 
 
     const playerTop =
@@ -154,11 +264,13 @@ function checkCollision() {
 
 
     const playerBottom =
-        playerTop + player.offsetHeight;
+        playerTop +
+        player.offsetHeight;
 
 
     const obstacleLeft =
         obstacleX;
+
 
     const obstacleRight =
         obstacleX +
@@ -168,16 +280,32 @@ function checkCollision() {
     const obstacleTop =
         obstacleY;
 
+
     const obstacleBottom =
         obstacleY +
         obstacle.offsetHeight;
 
 
     if (
-        playerLeft < obstacleRight &&
-        playerRight > obstacleLeft &&
-        playerTop < obstacleBottom &&
-        playerBottom > obstacleTop
+
+        playerLeft <
+        obstacleRight
+
+        &&
+
+        playerRight >
+        obstacleLeft
+
+        &&
+
+        playerTop <
+        obstacleBottom
+
+        &&
+
+        playerBottom >
+        obstacleTop
+
     ) {
 
         gameOver();
@@ -187,43 +315,62 @@ function checkCollision() {
 }
 
 
-// 게임 오버
+/* =========================
+   게임 오버
+========================= */
+
 function gameOver() {
 
     gameRunning = false;
+
     gamePaused = false;
+
 
     statusText.textContent =
         "GAME OVER 💥";
 
+
     pauseButton.textContent =
         "일시정지";
 
 }
 
 
-// 성공
+/* =========================
+   성공
+========================= */
+
 function success() {
 
     gameRunning = false;
+
     gamePaused = false;
+
 
     statusText.textContent =
         "SUCCESS! 🚀";
 
+
     pauseButton.textContent =
         "일시정지";
 
 }
 
 
-// 일시정지 / 재개
+/* =========================
+   일시정지 / 재개
+========================= */
+
 function togglePause() {
 
     if (!gameRunning) {
+
         return;
+
     }
 
+
+    /* 일시정지 */
 
     if (!gamePaused) {
 
@@ -231,26 +378,36 @@ function togglePause() {
 
         pausedTime = Date.now();
 
+
         statusText.textContent =
             "PAUSED";
+
 
         pauseButton.textContent =
             "재개";
 
     }
 
+
+    /* 재개 */
+
     else {
 
         const pauseDuration =
-            Date.now() - pausedTime;
+            Date.now() -
+            pausedTime;
+
 
         totalPausedTime +=
             pauseDuration;
 
+
         gamePaused = false;
+
 
         statusText.textContent =
             "게임 재개";
+
 
         pauseButton.textContent =
             "일시정지";
@@ -260,13 +417,17 @@ function togglePause() {
 }
 
 
-// 키보드
+/* =========================
+   키보드
+========================= */
+
 document.addEventListener(
     "keydown",
     function(event) {
 
 
-        // R = 재시작
+        /* R = 다시 시작 */
+
         if (
             event.key.toLowerCase() === "r"
         ) {
@@ -274,10 +435,12 @@ document.addEventListener(
             startGame();
 
             return;
+
         }
 
 
-        // P = 일시정지
+        /* P = 일시정지 */
+
         if (
             event.key.toLowerCase() === "p"
         ) {
@@ -285,8 +448,11 @@ document.addEventListener(
             togglePause();
 
             return;
+
         }
 
+
+        /* 게임 중이 아니면 무시 */
 
         if (
             !gameRunning ||
@@ -294,13 +460,16 @@ document.addEventListener(
         ) {
 
             return;
+
         }
 
 
-        // 키 자동 반복 방지
+        /* 키 자동 반복 방지 */
+
         if (event.repeat) {
 
             return;
+
         }
 
 
@@ -308,12 +477,14 @@ document.addEventListener(
             getMaxPlayerX();
 
 
-        // 왼쪽
+        /* 왼쪽 */
+
         if (
             event.key === "ArrowLeft"
         ) {
 
             event.preventDefault();
+
 
             playerX -= 20;
 
@@ -331,18 +502,21 @@ document.addEventListener(
         }
 
 
-        // 오른쪽
+        /* 오른쪽 */
+
         if (
             event.key === "ArrowRight"
         ) {
 
             event.preventDefault();
 
+
             playerX += 20;
 
 
             if (
-                playerX > maxPlayerX
+                playerX >
+                maxPlayerX
             ) {
 
                 playerX =
@@ -360,7 +534,10 @@ document.addEventListener(
 );
 
 
-// 일시정지 버튼
+/* =========================
+   일시정지 버튼
+========================= */
+
 pauseButton.addEventListener(
     "click",
     function() {
@@ -371,7 +548,10 @@ pauseButton.addEventListener(
 );
 
 
-// 시작 버튼
+/* =========================
+   시작 버튼
+========================= */
+
 startButton.addEventListener(
     "click",
     function() {
@@ -382,13 +562,19 @@ startButton.addEventListener(
 );
 
 
-// 화면 크기 변경
+/* =========================
+   화면 크기 변경
+========================= */
+
 window.addEventListener(
     "resize",
     function() {
 
+
         if (!gameRunning) {
+
             return;
+
         }
 
 
@@ -396,9 +582,12 @@ window.addEventListener(
             getMaxPlayerX();
 
 
-        // 우주선이 화면 밖으로 나가지 않게 함
+        /* 플레이어가 화면 밖으로
+           나가지 않도록 보정 */
+
         if (
-            playerX > maxPlayerX
+            playerX >
+            maxPlayerX
         ) {
 
             playerX =
@@ -407,20 +596,23 @@ window.addEventListener(
                     maxPlayerX
                 );
 
+
             player.style.left =
                 playerX + "px";
 
         }
 
 
-        // 운석도 경계 보정
+        /* 장애물 위치 보정 */
+
         const maxObstacleX =
             game.clientWidth -
             obstacle.offsetWidth;
 
 
         if (
-            obstacleX > maxObstacleX
+            obstacleX >
+            maxObstacleX
         ) {
 
             obstacleX =
@@ -428,6 +620,7 @@ window.addEventListener(
                     0,
                     maxObstacleX
                 );
+
 
             obstacle.style.left =
                 obstacleX + "px";
@@ -438,15 +631,23 @@ window.addEventListener(
 );
 
 
-// 브라우저 탭을 벗어났을 때
+/* =========================
+   브라우저 탭 이탈
+========================= */
+
 document.addEventListener(
     "visibilitychange",
     function() {
 
+
         if (!gameRunning) {
+
             return;
+
         }
 
+
+        /* 다른 탭으로 이동 */
 
         if (document.hidden) {
 
@@ -458,6 +659,9 @@ document.addEventListener(
 
         }
 
+
+        /* 다시 돌아옴 */
+
         else {
 
             if (gamePaused) {
@@ -468,45 +672,6 @@ document.addEventListener(
             }
 
         }
-
-    }
-);
-
-
-// 창 포커스 이탈
-window.addEventListener(
-    "blur",
-    function() {
-
-        if (
-            !gameRunning ||
-            gamePaused
-        ) {
-
-            return;
-        }
-
-        togglePause();
-
-    }
-);
-
-
-// 창 포커스 복귀
-window.addEventListener(
-    "focus",
-    function() {
-
-        if (
-            !gameRunning ||
-            !gamePaused
-        ) {
-
-            return;
-        }
-
-        statusText.textContent =
-            "PAUSED - P키 또는 재개 버튼";
 
     }
 );
