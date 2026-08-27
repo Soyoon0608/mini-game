@@ -6,64 +6,138 @@ html,
 body {
     margin: 0;
     padding: 0;
+
     width: 100%;
     min-height: 100%;
 }
 
 body {
+
     font-family: Arial, sans-serif;
+
     text-align: center;
 
-    /* 우주 배경 */
-    background:
-        radial-gradient(circle at 20% 20%, #302080 0, transparent 20%),
-        radial-gradient(circle at 80% 30%, #201060 0, transparent 25%),
-        radial-gradient(circle at 50% 80%, #35105f 0, transparent 25%),
-        #050518;
-
     color: white;
+
+    /* 전체 우주 배경 */
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            #302080 0,
+            transparent 20%
+        ),
+
+        radial-gradient(
+            circle at 80% 30%,
+            #201060 0,
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 50% 80%,
+            #35105f 0,
+            transparent 25%
+        ),
+
+        #050518;
 
     overflow-x: hidden;
 }
 
+
+/* =========================
+   게임 전체
+========================= */
+
 .game-container {
+
     width: 600px;
+
     max-width: 95%;
 
     margin: 30px auto;
 }
 
+
 h1 {
+
     margin-bottom: 10px;
+
 }
 
+
 p {
+
     margin: 8px 0;
+
 }
 
 
 /* =========================
-   게임 영역
+   게임 화면
 ========================= */
 
 #game {
+
     position: relative;
 
     width: 100%;
+
     height: 400px;
 
     margin: 20px auto;
 
     background:
-        radial-gradient(circle at 10% 20%, white 1px, transparent 2px),
-        radial-gradient(circle at 30% 70%, white 1px, transparent 2px),
-        radial-gradient(circle at 50% 30%, white 1px, transparent 2px),
-        radial-gradient(circle at 70% 80%, white 1px, transparent 2px),
-        radial-gradient(circle at 90% 40%, white 1px, transparent 2px),
-        radial-gradient(circle at 40% 90%, white 1px, transparent 2px),
-        #08082b;
 
-    background-size: 100px 100px;
+        radial-gradient(
+            circle at 10% 20%,
+            white 1px,
+            transparent 2px
+        ),
+
+        radial-gradient(
+            circle at 30% 70%,
+            white 1px,
+            transparent 2px
+        ),
+
+        radial-gradient(
+            circle at 50% 30%,
+            white 1px,
+            transparent 2px
+        ),
+
+        radial-gradient(
+            circle at 70% 80%,
+            white 1px,
+            transparent 2px
+        ),
+
+        radial-gradient(
+            circle at 90% 40%,
+            white 1px,
+            transparent 2px
+        ),
+
+        radial-gradient(
+            circle at 40% 90%,
+            white 1px,
+            transparent 2px
+        ),
+
+        linear-gradient(
+            #03031c,
+            #11114d
+        );
+
+    background-size:
+        100px 100px,
+        130px 130px,
+        160px 160px,
+        180px 180px,
+        120px 120px,
+        200px 200px,
+        100% 100%;
 
     border: 3px solid #7777ff;
 
@@ -72,8 +146,10 @@ p {
     overflow: hidden;
 
     box-shadow:
+
         0 0 20px #4444ff,
-        inset 0 0 30px #111155;
+
+        inset 0 0 40px #000033;
 }
 
 
@@ -82,17 +158,22 @@ p {
 ========================= */
 
 .star {
+
     position: absolute;
 
     width: 3px;
+
     height: 3px;
 
     background: white;
 
     border-radius: 50%;
 
-    box-shadow: 0 0 6px white;
+    box-shadow:
+        0 0 6px white;
+
 }
+
 
 .star1 {
     left: 10%;
@@ -140,131 +221,160 @@ p {
 ========================= */
 
 #player {
+
     position: absolute;
 
     width: 40px;
+
     height: 50px;
 
     bottom: 15px;
+
     left: 280px;
 
     z-index: 5;
 }
 
 
-/* 비행기 몸체 */
+/* 우주선 몸체 */
 
 .plane-body {
+
     position: absolute;
 
     width: 18px;
+
     height: 42px;
 
     left: 11px;
+
     top: 0;
 
-    background: linear-gradient(
-        to right,
-        #eeeeee,
-        #888888,
-        #ffffff
-    );
+    background:
+        linear-gradient(
+            to right,
+            #eeeeee,
+            #888888,
+            #ffffff
+        );
 
-    border-radius: 50% 50% 30% 30%;
+    border-radius:
+        50% 50% 30% 30%;
 
     box-shadow:
-        0 0 8px #ffffff;
+        0 0 8px white;
 }
 
 
-/* 비행기 왼쪽 날개 */
+/* 왼쪽 날개 */
 
 .wing-left {
+
     position: absolute;
 
     width: 20px;
-    height: 12px;
+
+    height: 14px;
 
     left: 0;
+
     top: 25px;
 
     background: #4da6ff;
 
-    clip-path: polygon(
-        100% 0,
-        0 100%,
-        100% 100%
-    );
+    clip-path:
+        polygon(
+            100% 0,
+            0 100%,
+            100% 100%
+        );
 
-    box-shadow: 0 0 5px #4da6ff;
+    box-shadow:
+        0 0 5px #4da6ff;
 }
 
 
-/* 비행기 오른쪽 날개 */
+/* 오른쪽 날개 */
 
 .wing-right {
+
     position: absolute;
 
     width: 20px;
-    height: 12px;
+
+    height: 14px;
 
     right: 0;
+
     top: 25px;
 
     background: #4da6ff;
 
-    clip-path: polygon(
-        0 0,
-        100% 100%,
-        0 100%
-    );
+    clip-path:
+        polygon(
+            0 0,
+            100% 100%,
+            0 100%
+        );
 
-    box-shadow: 0 0 5px #4da6ff;
+    box-shadow:
+        0 0 5px #4da6ff;
 }
 
 
 /* 엔진 불꽃 */
 
 .engine {
+
     position: absolute;
 
     width: 10px;
+
     height: 15px;
 
     left: 15px;
+
     top: 37px;
 
-    background: linear-gradient(
-        to bottom,
-        #ffff00,
-        #ff6600,
-        transparent
-    );
+    background:
+        linear-gradient(
+            to bottom,
+            #ffff00,
+            #ff6600,
+            transparent
+        );
 
     border-radius: 50%;
+
 }
 
 
 /* =========================
-   운석
+   장애물
 ========================= */
 
 #obstacle {
+
     position: absolute;
 
     width: 40px;
+
     height: 40px;
 
     top: -40px;
+
     left: 100px;
 
-    font-size: 32px;
+    z-index: 10;
 
-    line-height: 40px;
+    background: red;
 
-    text-align: center;
+    border: 2px solid white;
 
-    filter: drop-shadow(0 0 5px orange);
+    border-radius: 5px;
+
+    box-shadow:
+        0 0 10px red;
 }
 
 
@@ -273,9 +383,11 @@ p {
 ========================= */
 
 #status {
+
     min-height: 30px;
 
     font-size: 24px;
+
     font-weight: bold;
 
     margin: 15px;
@@ -287,6 +399,7 @@ p {
 ========================= */
 
 .button-container {
+
     display: flex;
 
     justify-content: center;
@@ -296,7 +409,9 @@ p {
     flex-wrap: wrap;
 }
 
+
 button {
+
     padding: 12px 25px;
 
     font-size: 18px;
@@ -314,6 +429,9 @@ button {
     font-weight: bold;
 }
 
+
 button:hover {
+
     background: #5555dd;
+
 }
