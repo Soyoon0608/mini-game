@@ -12,7 +12,6 @@ body {
 }
 
 body {
-
     font-family: Arial, sans-serif;
 
     text-align: center;
@@ -26,19 +25,16 @@ body {
             #302080 0,
             transparent 20%
         ),
-
         radial-gradient(
             circle at 80% 30%,
             #201060 0,
             transparent 25%
         ),
-
         radial-gradient(
             circle at 50% 80%,
             #35105f 0,
             transparent 25%
         ),
-
         #050518;
 
     overflow-x: hidden;
@@ -46,11 +42,10 @@ body {
 
 
 /* =========================
-   게임 전체
+   게임 컨테이너
 ========================= */
 
 .game-container {
-
     width: 600px;
 
     max-width: 95%;
@@ -58,18 +53,12 @@ body {
     margin: 30px auto;
 }
 
-
 h1 {
-
     margin-bottom: 10px;
-
 }
 
-
 p {
-
     margin: 8px 0;
-
 }
 
 
@@ -78,66 +67,48 @@ p {
 ========================= */
 
 #game {
-
     position: relative;
 
     width: 100%;
-
     height: 400px;
 
     margin: 20px auto;
 
     background:
-
         radial-gradient(
             circle at 10% 20%,
             white 1px,
             transparent 2px
         ),
-
         radial-gradient(
             circle at 30% 70%,
             white 1px,
             transparent 2px
         ),
-
         radial-gradient(
             circle at 50% 30%,
             white 1px,
             transparent 2px
         ),
-
         radial-gradient(
             circle at 70% 80%,
             white 1px,
             transparent 2px
         ),
-
         radial-gradient(
             circle at 90% 40%,
             white 1px,
             transparent 2px
         ),
-
         radial-gradient(
             circle at 40% 90%,
             white 1px,
             transparent 2px
         ),
-
         linear-gradient(
             #03031c,
             #11114d
         );
-
-    background-size:
-        100px 100px,
-        130px 130px,
-        160px 160px,
-        180px 180px,
-        120px 120px,
-        200px 200px,
-        100% 100%;
 
     border: 3px solid #7777ff;
 
@@ -146,9 +117,7 @@ p {
     overflow: hidden;
 
     box-shadow:
-
         0 0 20px #4444ff,
-
         inset 0 0 40px #000033;
 }
 
@@ -158,11 +127,9 @@ p {
 ========================= */
 
 .star {
-
     position: absolute;
 
     width: 3px;
-
     height: 3px;
 
     background: white;
@@ -172,8 +139,8 @@ p {
     box-shadow:
         0 0 6px white;
 
+    z-index: 1;
 }
-
 
 .star1 {
     left: 10%;
@@ -221,33 +188,28 @@ p {
 ========================= */
 
 #player {
-
     position: absolute;
 
     width: 40px;
-
     height: 50px;
 
     bottom: 15px;
 
     left: 280px;
 
-    z-index: 5;
+    z-index: 20;
 }
 
 
 /* 우주선 몸체 */
 
 .plane-body {
-
     position: absolute;
 
     width: 18px;
-
     height: 42px;
 
     left: 11px;
-
     top: 0;
 
     background:
@@ -269,15 +231,12 @@ p {
 /* 왼쪽 날개 */
 
 .wing-left {
-
     position: absolute;
 
     width: 20px;
-
     height: 14px;
 
     left: 0;
-
     top: 25px;
 
     background: #4da6ff;
@@ -297,15 +256,12 @@ p {
 /* 오른쪽 날개 */
 
 .wing-right {
-
     position: absolute;
 
     width: 20px;
-
     height: 14px;
 
     right: 0;
-
     top: 25px;
 
     background: #4da6ff;
@@ -322,18 +278,15 @@ p {
 }
 
 
-/* 엔진 불꽃 */
+/* 엔진 */
 
 .engine {
-
     position: absolute;
 
     width: 10px;
-
     height: 15px;
 
     left: 15px;
-
     top: 37px;
 
     background:
@@ -345,7 +298,6 @@ p {
         );
 
     border-radius: 50%;
-
 }
 
 
@@ -354,27 +306,27 @@ p {
 ========================= */
 
 #obstacle {
-
     position: absolute;
 
     width: 40px;
-
     height: 40px;
 
+    /* 화면 위에서 시작 */
     top: -40px;
 
     left: 100px;
 
-    z-index: 10;
-
     background: red;
 
-    border: 2px solid white;
+    border: 3px solid white;
 
-    border-radius: 5px;
+    border-radius: 6px;
+
+    z-index: 30;
 
     box-shadow:
-        0 0 10px red;
+        0 0 10px red,
+        0 0 20px #ff3333;
 }
 
 
@@ -383,7 +335,6 @@ p {
 ========================= */
 
 #status {
-
     min-height: 30px;
 
     font-size: 24px;
@@ -399,7 +350,6 @@ p {
 ========================= */
 
 .button-container {
-
     display: flex;
 
     justify-content: center;
@@ -409,9 +359,7 @@ p {
     flex-wrap: wrap;
 }
 
-
 button {
-
     padding: 12px 25px;
 
     font-size: 18px;
@@ -429,9 +377,23 @@ button {
     font-weight: bold;
 }
 
-
 button:hover {
-
     background: #5555dd;
+}
+
+
+/* =========================
+   모바일 / 작은 화면
+========================= */
+
+@media (max-width: 650px) {
+
+    .game-container {
+        width: 95%;
+    }
+
+    #game {
+        height: 400px;
+    }
 
 }
