@@ -19,7 +19,7 @@ let totalPausedTime = 0;
 const gameTime = 20000;
 
 /* 과제 3 난이도 값 */
-const OBSTACLE_SPEED = 10;
+const OBSTACLE_SPEED = 15;
 
 function getMaxPlayerX() {
     return game.clientWidth - player.offsetWidth;
