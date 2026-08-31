@@ -1,4 +1,13 @@
 ```javascript
+/* =========================
+   우주 장애물 피하기 - game.js
+========================= */
+
+
+/* =========================
+   HTML 요소 연결
+========================= */
+
 const game = document.getElementById("game");
 const player = document.getElementById("player");
 const obstacle = document.getElementById("obstacle");
@@ -27,7 +36,7 @@ let totalPausedTime = 0;
    게임 설정
 ========================= */
 
-/* 게임 시간 20초 */
+/* 게임 시간: 20초 */
 
 const gameTime = 20000;
 
@@ -37,29 +46,26 @@ const gameTime = 20000;
 ========================= */
 
 /*
-   과제 3에서 변경하는 값은
-   이 값 하나만 변경합니다.
+   과제 3에서 변경할 값은
+   이 값 하나입니다.
 
    5 = 변경 전
    7 = 변경 후
 
-   숫자가 클수록 장애물이 빠르게 내려와
-   난이도가 높아집니다.
+   숫자가 클수록 장애물이
+   더 빠르게 내려옵니다.
 */
 
 const OBSTACLE_SPEED = 5;
 
 
 /* =========================
-   플레이어 최대 X
+   플레이어 최대 이동 위치
 ========================= */
 
 function getMaxPlayerX() {
 
-    return (
-        game.clientWidth -
-        player.offsetWidth
-    );
+    return game.clientWidth - player.offsetWidth;
 
 }
 
@@ -70,7 +76,7 @@ function getMaxPlayerX() {
 
 function startGame() {
 
-    /* 플레이어 가운데 배치 */
+    /* 플레이어를 가운데에 배치 */
 
     playerX =
         (
@@ -91,7 +97,7 @@ function startGame() {
         );
 
 
-    /* 장애물은 화면 위에서 시작 */
+    /* 장애물을 화면 위쪽에 배치 */
 
     obstacleY =
         -obstacle.offsetHeight;
@@ -129,11 +135,13 @@ function startGame() {
         "남은 시간: 20초";
 
 
+    /* 일시정지 버튼 초기화 */
+
     pauseButton.textContent =
         "일시정지";
 
 
-    /* 게임 시작 */
+    /* 게임 루프 시작 */
 
     requestAnimationFrame(gameLoop);
 
@@ -146,7 +154,7 @@ function startGame() {
 
 function gameLoop() {
 
-    /* 게임이 끝났으면 종료 */
+    /* 게임 종료 */
 
     if (!gameRunning) {
 
@@ -155,7 +163,7 @@ function gameLoop() {
     }
 
 
-    /* 일시정지 상태 */
+    /* 일시정지 */
 
     if (gamePaused) {
 
@@ -166,15 +174,15 @@ function gameLoop() {
     }
 
 
-    /* 경과 시간 계산 */
+    /* 경과 시간 */
 
     const elapsed =
-        Date.now()
-        - startTime
-        - totalPausedTime;
+        Date.now() -
+        startTime -
+        totalPausedTime;
 
 
-    /* 남은 시간 계산 */
+    /* 남은 시간 */
 
     const remaining =
         Math.max(
@@ -188,7 +196,7 @@ function gameLoop() {
         );
 
 
-    /* 화면에 남은 시간 표시 */
+    /* 남은 시간 표시 */
 
     statusText.textContent =
         "남은 시간: " +
@@ -216,21 +224,17 @@ function gameLoop() {
     obstacleY += OBSTACLE_SPEED;
 
 
-    /* 장애물이 화면 아래로
-       완전히 지나간 경우 */
+    /* 장애물이 화면 아래로 지나가면
+       다시 위에서 생성 */
 
     if (
         obstacleY >
         game.clientHeight
     ) {
 
-        /* 다시 위에서 시작 */
-
         obstacleY =
             -obstacle.offsetHeight;
 
-
-        /* 새로운 랜덤 위치 */
 
         obstacleX =
             Math.floor(
@@ -259,8 +263,7 @@ function gameLoop() {
     checkCollision();
 
 
-    /* 게임이 계속 진행 중이면
-       다음 프레임 실행 */
+    /* 다음 프레임 */
 
     if (gameRunning) {
 
@@ -277,7 +280,7 @@ function gameLoop() {
 
 function checkCollision() {
 
-    /* 플레이어 */
+    /* 플레이어 영역 */
 
     const playerLeft =
         playerX;
@@ -297,7 +300,7 @@ function checkCollision() {
         player.offsetHeight;
 
 
-    /* 장애물 */
+    /* 장애물 영역 */
 
     const obstacleLeft =
         obstacleX;
@@ -305,7 +308,6 @@ function checkCollision() {
     const obstacleRight =
         obstacleX +
         obstacle.offsetWidth;
-
 
     const obstacleTop =
         obstacleY;
@@ -315,7 +317,7 @@ function checkCollision() {
         obstacle.offsetHeight;
 
 
-    /* 충돌 여부 */
+    /* 충돌 여부 확인 */
 
     if (
 
@@ -384,7 +386,7 @@ function success() {
 
 function togglePause() {
 
-    /* 게임 중이 아니면 무시 */
+    /* 게임 중이 아니면 아무것도 하지 않음 */
 
     if (!gameRunning) {
 
@@ -454,7 +456,7 @@ document.addEventListener(
 
 
         /* =========================
-           R = 다시 시작
+           R 키 = 다시 시작
         ========================= */
 
         if (
@@ -469,7 +471,7 @@ document.addEventListener(
 
 
         /* =========================
-           P = 일시정지
+           P 키 = 일시정지
         ========================= */
 
         if (
@@ -525,8 +527,6 @@ document.addEventListener(
             playerX -= 20;
 
 
-            /* 왼쪽 경계 */
-
             if (playerX < 0) {
 
                 playerX = 0;
@@ -553,8 +553,6 @@ document.addEventListener(
 
             playerX += 20;
 
-
-            /* 오른쪽 경계 */
 
             if (
                 playerX >
@@ -621,9 +619,7 @@ window.addEventListener(
         }
 
 
-        /* =========================
-           플레이어 경계
-        ========================= */
+        /* 플레이어 경계 */
 
         const maxPlayerX =
             getMaxPlayerX();
@@ -647,9 +643,7 @@ window.addEventListener(
         }
 
 
-        /* =========================
-           장애물 경계
-        ========================= */
+        /* 장애물 경계 */
 
         const maxObstacleX =
             game.clientWidth -
@@ -694,9 +688,7 @@ document.addEventListener(
         }
 
 
-        /* =========================
-           다른 탭으로 이동
-        ========================= */
+        /* 다른 탭으로 이동 */
 
         if (document.hidden) {
 
@@ -709,9 +701,7 @@ document.addEventListener(
         }
 
 
-        /* =========================
-           다시 돌아옴
-        ========================= */
+        /* 다시 돌아왔을 때 */
 
         else {
 
