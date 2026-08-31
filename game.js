@@ -1,14 +1,9 @@
 ```javascript
 const game = document.getElementById("game");
-
 const player = document.getElementById("player");
-
 const obstacle = document.getElementById("obstacle");
-
 const statusText = document.getElementById("status");
-
 const startButton = document.getElementById("startButton");
-
 const pauseButton = document.getElementById("pauseButton");
 
 
@@ -17,19 +12,14 @@ const pauseButton = document.getElementById("pauseButton");
 ========================= */
 
 let playerX = 0;
-
 let obstacleX = 100;
-
 let obstacleY = -40;
 
 let gameRunning = false;
-
 let gamePaused = false;
 
 let startTime = 0;
-
 let pausedTime = 0;
-
 let totalPausedTime = 0;
 
 
@@ -47,13 +37,14 @@ const gameTime = 20000;
 ========================= */
 
 /*
-   장애물 속도
+   과제 3에서 변경하는 값은
+   이 값 하나만 변경합니다.
 
-   5 = 변경 전 난이도
-   7 = 변경 후 난이도
+   5 = 변경 전
+   7 = 변경 후
 
-   과제에서는 이 값 하나만 변경해서
-   변경 전 10회 / 변경 후 10회를 비교한다.
+   숫자가 클수록 장애물이 빠르게 내려와
+   난이도가 높아집니다.
 */
 
 const OBSTACLE_SPEED = 5;
@@ -79,7 +70,7 @@ function getMaxPlayerX() {
 
 function startGame() {
 
-    /* 플레이어 가운데 */
+    /* 플레이어 가운데 배치 */
 
     playerX =
         (
@@ -100,37 +91,39 @@ function startGame() {
         );
 
 
-    /* 장애물은 위에서 시작 */
+    /* 장애물은 화면 위에서 시작 */
 
     obstacleY =
         -obstacle.offsetHeight;
 
 
+    /* 게임 상태 초기화 */
+
     gameRunning = true;
-
     gamePaused = false;
-
 
     startTime = Date.now();
 
     pausedTime = 0;
-
     totalPausedTime = 0;
 
 
-    /* 화면에 위치 적용 */
+    /* 플레이어 위치 적용 */
 
     player.style.left =
         playerX + "px";
 
 
+    /* 장애물 위치 적용 */
+
     obstacle.style.left =
         obstacleX + "px";
-
 
     obstacle.style.top =
         obstacleY + "px";
 
+
+    /* 상태 표시 */
 
     statusText.textContent =
         "남은 시간: 20초";
@@ -139,6 +132,8 @@ function startGame() {
     pauseButton.textContent =
         "일시정지";
 
+
+    /* 게임 시작 */
 
     requestAnimationFrame(gameLoop);
 
@@ -151,6 +146,8 @@ function startGame() {
 
 function gameLoop() {
 
+    /* 게임이 끝났으면 종료 */
+
     if (!gameRunning) {
 
         return;
@@ -158,7 +155,7 @@ function gameLoop() {
     }
 
 
-    /* 일시정지 */
+    /* 일시정지 상태 */
 
     if (gamePaused) {
 
@@ -169,7 +166,7 @@ function gameLoop() {
     }
 
 
-    /* 게임 경과 시간 */
+    /* 경과 시간 계산 */
 
     const elapsed =
         Date.now()
@@ -177,7 +174,7 @@ function gameLoop() {
         - totalPausedTime;
 
 
-    /* 남은 시간 */
+    /* 남은 시간 계산 */
 
     const remaining =
         Math.max(
@@ -191,13 +188,17 @@ function gameLoop() {
         );
 
 
+    /* 화면에 남은 시간 표시 */
+
     statusText.textContent =
         "남은 시간: " +
         remaining +
         "초";
 
 
-    /* 20초 성공 */
+    /* =========================
+       20초 생존 성공
+    ========================= */
 
     if (elapsed >= gameTime) {
 
@@ -215,17 +216,21 @@ function gameLoop() {
     obstacleY += OBSTACLE_SPEED;
 
 
-    /* 장애물이 화면 아래로 지나가면
-       다시 위에서 생성 */
+    /* 장애물이 화면 아래로
+       완전히 지나간 경우 */
 
     if (
         obstacleY >
         game.clientHeight
     ) {
 
+        /* 다시 위에서 시작 */
+
         obstacleY =
             -obstacle.offsetHeight;
 
+
+        /* 새로운 랜덤 위치 */
 
         obstacleX =
             Math.floor(
@@ -243,6 +248,8 @@ function gameLoop() {
     }
 
 
+    /* 장애물 위치 적용 */
+
     obstacle.style.top =
         obstacleY + "px";
 
@@ -251,6 +258,9 @@ function gameLoop() {
 
     checkCollision();
 
+
+    /* 게임이 계속 진행 중이면
+       다음 프레임 실행 */
 
     if (gameRunning) {
 
@@ -267,9 +277,10 @@ function gameLoop() {
 
 function checkCollision() {
 
+    /* 플레이어 */
+
     const playerLeft =
         playerX;
-
 
     const playerRight =
         playerX +
@@ -281,15 +292,15 @@ function checkCollision() {
         15 -
         player.offsetHeight;
 
-
     const playerBottom =
         playerTop +
         player.offsetHeight;
 
 
+    /* 장애물 */
+
     const obstacleLeft =
         obstacleX;
-
 
     const obstacleRight =
         obstacleX +
@@ -299,11 +310,12 @@ function checkCollision() {
     const obstacleTop =
         obstacleY;
 
-
     const obstacleBottom =
         obstacleY +
         obstacle.offsetHeight;
 
+
+    /* 충돌 여부 */
 
     if (
 
@@ -372,6 +384,8 @@ function success() {
 
 function togglePause() {
 
+    /* 게임 중이 아니면 무시 */
+
     if (!gameRunning) {
 
         return;
@@ -379,7 +393,9 @@ function togglePause() {
     }
 
 
-    /* 일시정지 */
+    /* =========================
+       일시정지
+    ========================= */
 
     if (!gamePaused) {
 
@@ -398,7 +414,9 @@ function togglePause() {
     }
 
 
-    /* 재개 */
+    /* =========================
+       재개
+    ========================= */
 
     else {
 
@@ -435,7 +453,9 @@ document.addEventListener(
     function(event) {
 
 
-        /* R = 재시작 */
+        /* =========================
+           R = 다시 시작
+        ========================= */
 
         if (
             event.key.toLowerCase() === "r"
@@ -448,7 +468,9 @@ document.addEventListener(
         }
 
 
-        /* P = 일시정지 */
+        /* =========================
+           P = 일시정지
+        ========================= */
 
         if (
             event.key.toLowerCase() === "p"
@@ -483,11 +505,15 @@ document.addEventListener(
         }
 
 
+        /* 플레이어 최대 이동 위치 */
+
         const maxPlayerX =
             getMaxPlayerX();
 
 
-        /* 왼쪽 */
+        /* =========================
+           왼쪽 이동
+        ========================= */
 
         if (
             event.key === "ArrowLeft"
@@ -498,6 +524,8 @@ document.addEventListener(
 
             playerX -= 20;
 
+
+            /* 왼쪽 경계 */
 
             if (playerX < 0) {
 
@@ -512,7 +540,9 @@ document.addEventListener(
         }
 
 
-        /* 오른쪽 */
+        /* =========================
+           오른쪽 이동
+        ========================= */
 
         if (
             event.key === "ArrowRight"
@@ -523,6 +553,8 @@ document.addEventListener(
 
             playerX += 20;
 
+
+            /* 오른쪽 경계 */
 
             if (
                 playerX >
@@ -580,6 +612,8 @@ window.addEventListener(
     "resize",
     function() {
 
+        /* 게임 중이 아니면 종료 */
+
         if (!gameRunning) {
 
             return;
@@ -587,7 +621,9 @@ window.addEventListener(
         }
 
 
-        /* 플레이어 경계 */
+        /* =========================
+           플레이어 경계
+        ========================= */
 
         const maxPlayerX =
             getMaxPlayerX();
@@ -611,7 +647,9 @@ window.addEventListener(
         }
 
 
-        /* 장애물 경계 */
+        /* =========================
+           장애물 경계
+        ========================= */
 
         const maxObstacleX =
             game.clientWidth -
@@ -647,6 +685,8 @@ document.addEventListener(
     "visibilitychange",
     function() {
 
+        /* 게임 중이 아니면 종료 */
+
         if (!gameRunning) {
 
             return;
@@ -654,7 +694,9 @@ document.addEventListener(
         }
 
 
-        /* 다른 탭으로 이동 */
+        /* =========================
+           다른 탭으로 이동
+        ========================= */
 
         if (document.hidden) {
 
@@ -667,7 +709,9 @@ document.addEventListener(
         }
 
 
-        /* 다시 돌아옴 */
+        /* =========================
+           다시 돌아옴
+        ========================= */
 
         else {
 
