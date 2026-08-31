@@ -1,3 +1,4 @@
+```javascript
 const game = document.getElementById("game");
 
 const player = document.getElementById("player");
@@ -32,9 +33,30 @@ let pausedTime = 0;
 let totalPausedTime = 0;
 
 
+/* =========================
+   게임 설정
+========================= */
+
 /* 게임 시간 20초 */
 
 const gameTime = 20000;
+
+
+/* =========================
+   난이도 설정
+========================= */
+
+/*
+   장애물 속도
+
+   5 = 변경 전 난이도
+   7 = 변경 후 난이도
+
+   과제에서는 이 값 하나만 변경해서
+   변경 전 10회 / 변경 후 10회를 비교한다.
+*/
+
+const OBSTACLE_SPEED = 5;
 
 
 /* =========================
@@ -190,7 +212,7 @@ function gameLoop() {
        장애물 이동
     ========================= */
 
-    obstacleY += 5;
+    obstacleY += OBSTACLE_SPEED;
 
 
     /* 장애물이 화면 아래로 지나가면
@@ -660,3 +682,4 @@ document.addEventListener(
 
     }
 );
+```
