@@ -40,7 +40,7 @@ const OBSTACLE_SPEED = 15;
    false : 충돌 시 효과 실행하지 않음
 */
 
-const EFFECT_ENABLED = true;
+const EFFECT_ENABLED = false;
 
 
 /* =========================================
