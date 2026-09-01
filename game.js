@@ -1,4 +1,3 @@
-javascript
 const game = document.getElementById("game");
 const player = document.getElementById("player");
 const obstacle = document.getElementById("obstacle");
