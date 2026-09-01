@@ -5,6 +5,7 @@ const statusText = document.getElementById("status");
 const startButton = document.getElementById("startButton");
 const pauseButton = document.getElementById("pauseButton");
 
+/* 게임 상태 */
 let playerX = 0;
 let obstacleX = 100;
 let obstacleY = -40;
@@ -19,14 +20,24 @@ let totalPausedTime = 0;
 const gameTime = 20000;
 
 /* 과제 3 난이도 값 */
-const OBSTACLE_SPEED = 8;
+const OBSTACLE_SPEED = 15;
+
+
+/* =========================================
+   카드 5 — 충돌 효과 설정
+   ========================================= */
+
+/*
+   true  = 충돌 시 화면 효과 사용
+   false = 충돌 시 화면 효과 사용 안 함
+*/
+const EFFECT_ENABLED = true;
 
 
 /* =========================================
    카드 4 — 저장과 손상 복구
    ========================================= */
 
-/* 기본 저장값 */
 const DEFAULT_SAVE = {
     bestTime: 0
 };
@@ -43,16 +54,16 @@ function loadSave() {
         return { ...DEFAULT_SAVE };
     }
 
-    /* 저장값이 없거나 빈 값 */
+    /* 빈 저장값 */
     if (!saved || saved.trim() === "") {
         return { ...DEFAULT_SAVE };
     }
 
+    /* 손상된 저장값 */
     try {
 
         const data = JSON.parse(saved);
 
-        /* 저장 데이터가 객체인지 확인 */
         if (
             data === null ||
             typeof data !== "object" ||
@@ -61,7 +72,6 @@ function loadSave() {
             return { ...DEFAULT_SAVE };
         }
 
-        /* bestTime 형식 검사 */
         if (
             typeof data.bestTime !== "number" ||
             !Number.isFinite(data.bestTime) ||
@@ -76,7 +86,6 @@ function loadSave() {
 
     } catch (error) {
 
-        /* JSON이 깨져 있으면 기본값 */
         return { ...DEFAULT_SAVE };
     }
 }
@@ -94,8 +103,9 @@ function saveGame(data) {
 
     } catch (error) {
 
-        /* 저장할 수 없어도 게임은 계속 실행 */
-        console.warn("저장 데이터를 저장할 수 없습니다.");
+        console.warn(
+            "저장 데이터를 저장할 수 없습니다."
+        );
     }
 }
 
@@ -104,30 +114,72 @@ function saveGame(data) {
 let saveData = loadSave();
 
 
-function getMaxPlayerX() {
+/* =========================================
+   카드 5 — 충돌 효과
+   ========================================= */
 
-    return game.clientWidth - player.offsetWidth;
+function playGameOverEffect() {
+
+    /*
+       효과가 꺼져 있으면 실행하지 않는다.
+    */
+    if (!EFFECT_ENABLED) {
+        return;
+    }
+
+    /*
+       이전 효과가 남아 있다면 제거한다.
+       → 효과가 계속 누적되는 것을 방지
+    */
+    game.classList.remove("game-effect");
+
+    /*
+       브라우저가 이전 상태를 다시 계산하도록 한다.
+       → 다음 충돌에서 효과를 다시 실행할 수 있음
+    */
+    void game.offsetWidth;
+
+    /*
+       충돌 시 효과 실행
+    */
+    game.classList.add("game-effect");
+
+    /*
+       0.3초 후 효과 종료
+    */
+    setTimeout(function() {
+
+        game.classList.remove("game-effect");
+
+    }, 300);
 }
 
 
 /* =========================================
-   게임 시작
+   게임 기본 기능
    ========================================= */
 
+function getMaxPlayerX() {
+
+    return game.clientWidth -
+        player.offsetWidth;
+}
+
+
+/* 게임 시작 */
 function startGame() {
 
-    /*
-       C22
-       새 게임 시작 시 현재 판 상태를 초기화한다.
-    */
+    /* C22 — 현재 판 초기화 */
 
     playerX =
-        (game.clientWidth - player.offsetWidth) / 2;
+        (game.clientWidth -
+            player.offsetWidth) / 2;
 
     obstacleX =
         Math.floor(
             Math.random() *
-            (game.clientWidth - obstacle.offsetWidth)
+            (game.clientWidth -
+                obstacle.offsetWidth)
         );
 
     obstacleY =
@@ -140,7 +192,7 @@ function startGame() {
     pausedTime = 0;
     totalPausedTime = 0;
 
-    /* 화면도 함께 초기화 */
+    /* 화면 초기화 */
     player.style.left =
         playerX + "px";
 
@@ -160,10 +212,7 @@ function startGame() {
 }
 
 
-/* =========================================
-   게임 루프
-   ========================================= */
-
+/* 게임 루프 */
 function gameLoop() {
 
     if (!gameRunning) {
@@ -200,9 +249,13 @@ function gameLoop() {
         return;
     }
 
-    obstacleY += OBSTACLE_SPEED;
+    obstacleY +=
+        OBSTACLE_SPEED;
 
-    if (obstacleY > game.clientHeight) {
+    if (
+        obstacleY >
+        game.clientHeight
+    ) {
 
         obstacleY =
             -obstacle.offsetHeight;
@@ -230,10 +283,7 @@ function gameLoop() {
 }
 
 
-/* =========================================
-   충돌 검사
-   ========================================= */
-
+/* 충돌 검사 */
 function checkCollision() {
 
     const playerLeft =
@@ -278,10 +328,7 @@ function checkCollision() {
 }
 
 
-/* =========================================
-   게임 오버
-   ========================================= */
-
+/* 게임 오버 */
 function gameOver() {
 
     gameRunning = false;
@@ -292,21 +339,21 @@ function gameOver() {
 
     pauseButton.textContent =
         "일시정지";
+
+    /*
+       C26
+       충돌 사건에서만 효과 실행
+    */
+    playGameOverEffect();
 }
 
 
-/* =========================================
-   성공
-   ========================================= */
-
+/* 성공 */
 function success() {
 
     gameRunning = false;
     gamePaused = false;
 
-    /*
-       실제 생존 시간 계산
-    */
     const elapsed =
         Math.min(
             gameTime,
@@ -320,10 +367,7 @@ function success() {
             elapsed / 1000
         );
 
-    /*
-       C23
-       보존하기로 한 최고 기록을 저장한다.
-    */
+    /* C23 — 최고 기록 저장 */
 
     if (
         survivedSeconds >
@@ -346,10 +390,7 @@ function success() {
 }
 
 
-/* =========================================
-   일시정지
-   ========================================= */
-
+/* 일시정지 */
 function togglePause() {
 
     if (!gameRunning) {
@@ -387,15 +428,11 @@ function togglePause() {
 }
 
 
-/* =========================================
-   키보드 조작
-   ========================================= */
-
+/* 키보드 조작 */
 document.addEventListener(
     "keydown",
     function(event) {
 
-        /* R = 다시 시작 */
         if (
             event.key.toLowerCase() === "r"
         ) {
@@ -404,7 +441,6 @@ document.addEventListener(
             return;
         }
 
-        /* P = 일시정지 */
         if (
             event.key.toLowerCase() === "p"
         ) {
@@ -428,8 +464,9 @@ document.addEventListener(
         const maxPlayerX =
             getMaxPlayerX();
 
-        /* 왼쪽 */
-        if (event.key === "ArrowLeft") {
+        if (
+            event.key === "ArrowLeft"
+        ) {
 
             event.preventDefault();
 
@@ -443,8 +480,9 @@ document.addEventListener(
                 playerX + "px";
         }
 
-        /* 오른쪽 */
-        if (event.key === "ArrowRight") {
+        if (
+            event.key === "ArrowRight"
+        ) {
 
             event.preventDefault();
 
@@ -461,10 +499,7 @@ document.addEventListener(
 );
 
 
-/* =========================================
-   버튼
-   ========================================= */
-
+/* 일시정지 버튼 */
 pauseButton.addEventListener(
     "click",
     function() {
@@ -474,6 +509,7 @@ pauseButton.addEventListener(
 );
 
 
+/* 게임 시작 버튼 */
 startButton.addEventListener(
     "click",
     function() {
@@ -483,10 +519,7 @@ startButton.addEventListener(
 );
 
 
-/* =========================================
-   화면 크기 변경
-   ========================================= */
-
+/* 화면 크기 변경 */
 window.addEventListener(
     "resize",
     function() {
@@ -529,10 +562,7 @@ window.addEventListener(
 );
 
 
-/* =========================================
-   브라우저 탭 전환
-   ========================================= */
-
+/* 브라우저 탭 전환 */
 document.addEventListener(
     "visibilitychange",
     function() {
