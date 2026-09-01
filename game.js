@@ -1,3 +1,4 @@
+javascript
 const game = document.getElementById("game");
 const player = document.getElementById("player");
 const obstacle = document.getElementById("obstacle");
@@ -21,11 +22,72 @@ const gameTime = 20000;
 /* 과제 3 난이도 값 */
 const OBSTACLE_SPEED = 15;
 
+/* =========================================
+   카드 4 — 저장과 손상 복구
+   ========================================= */
+
+/* 저장 데이터의 기본값 */
+const DEFAULT_SAVE = {
+    bestTime: 0
+};
+
+/* 저장 데이터 불러오기 */
+function loadSave() {
+
+    const saved = localStorage.getItem("gameSave");
+
+    /* 저장값이 없거나 빈 값인 경우 */
+    if (!saved || saved.trim() === "") {
+        return { ...DEFAULT_SAVE };
+    }
+
+    /* 손상된 JSON 처리 */
+    try {
+
+        const data = JSON.parse(saved);
+
+        /* bestTime 형식 검사 */
+        if (
+            typeof data.bestTime !== "number" ||
+            !Number.isFinite(data.bestTime) ||
+            data.bestTime < 0
+        ) {
+            return { ...DEFAULT_SAVE };
+        }
+
+        return data;
+
+    } catch (error) {
+
+        /* 손상된 저장값이면 기본값으로 복구 */
+        return { ...DEFAULT_SAVE };
+    }
+}
+
+/* 저장 데이터 저장 */
+function saveGame(data) {
+
+    localStorage.setItem(
+        "gameSave",
+        JSON.stringify(data)
+    );
+}
+
+/* 현재 저장 데이터 */
+let saveData = loadSave();
+
+
 function getMaxPlayerX() {
+
     return game.clientWidth - player.offsetWidth;
 }
 
+
 function startGame() {
+
+    /* =====================================
+       C22 — 새 게임에서 현재 판 값 초기화
+       ===================================== */
 
     playerX =
         (game.clientWidth - player.offsetWidth) / 2;
@@ -45,15 +107,20 @@ function startGame() {
     pausedTime = 0;
     totalPausedTime = 0;
 
+    /* 화면 초기화 */
     player.style.left = playerX + "px";
     obstacle.style.left = obstacleX + "px";
     obstacle.style.top = obstacleY + "px";
 
-    statusText.textContent = "남은 시간: 20초";
-    pauseButton.textContent = "일시정지";
+    statusText.textContent =
+        "남은 시간: 20초";
+
+    pauseButton.textContent =
+        "일시정지";
 
     requestAnimationFrame(gameLoop);
 }
+
 
 function gameLoop() {
 
@@ -62,6 +129,7 @@ function gameLoop() {
     }
 
     if (gamePaused) {
+
         requestAnimationFrame(gameLoop);
         return;
     }
@@ -79,6 +147,7 @@ function gameLoop() {
         "남은 시간: " + remaining + "초";
 
     if (elapsed >= gameTime) {
+
         success();
         return;
     }
@@ -105,9 +174,11 @@ function gameLoop() {
     checkCollision();
 
     if (gameRunning) {
+
         requestAnimationFrame(gameLoop);
     }
 }
+
 
 function checkCollision() {
 
@@ -128,14 +199,12 @@ function checkCollision() {
     const obstacleLeft = obstacleX;
 
     const obstacleRight =
-        obstacleX +
-        obstacle.offsetWidth;
+        obstacleX + obstacle.offsetWidth;
 
     const obstacleTop = obstacleY;
 
     const obstacleBottom =
-        obstacleY +
-        obstacle.offsetHeight;
+        obstacleY + obstacle.offsetHeight;
 
     if (
         playerLeft < obstacleRight &&
@@ -143,9 +212,11 @@ function checkCollision() {
         playerTop < obstacleBottom &&
         playerBottom > obstacleTop
     ) {
+
         gameOver();
     }
 }
+
 
 function gameOver() {
 
@@ -159,17 +230,43 @@ function gameOver() {
         "일시정지";
 }
 
+
 function success() {
 
     gameRunning = false;
     gamePaused = false;
 
+    /* 실제 생존 시간 계산 */
+    const elapsed =
+        Math.min(
+            gameTime,
+            Date.now() - startTime - totalPausedTime
+        );
+
+    const survivedSeconds =
+        Math.floor(elapsed / 1000);
+
+    /* =====================================
+       C23 — 보존 기록 저장
+       ===================================== */
+
+    if (survivedSeconds > saveData.bestTime) {
+
+        saveData.bestTime =
+            survivedSeconds;
+
+        saveGame(saveData);
+    }
+
     statusText.textContent =
-        "SUCCESS! 🚀";
+        "SUCCESS! 🚀 최고 기록: " +
+        saveData.bestTime +
+        "초";
 
     pauseButton.textContent =
         "일시정지";
 }
+
 
 function togglePause() {
 
@@ -193,7 +290,8 @@ function togglePause() {
         const pauseDuration =
             Date.now() - pausedTime;
 
-        totalPausedTime += pauseDuration;
+        totalPausedTime +=
+            pauseDuration;
 
         gamePaused = false;
 
@@ -205,25 +303,31 @@ function togglePause() {
     }
 }
 
+
+/* 키보드 조작 */
 document.addEventListener(
     "keydown",
     function(event) {
 
         if (event.key.toLowerCase() === "r") {
+
             startGame();
             return;
         }
 
         if (event.key.toLowerCase() === "p") {
+
             togglePause();
             return;
         }
 
         if (!gameRunning || gamePaused) {
+
             return;
         }
 
         if (event.repeat) {
+
             return;
         }
 
@@ -237,6 +341,7 @@ document.addEventListener(
             playerX -= 20;
 
             if (playerX < 0) {
+
                 playerX = 0;
             }
 
@@ -251,6 +356,7 @@ document.addEventListener(
             playerX += 20;
 
             if (playerX > maxPlayerX) {
+
                 playerX = maxPlayerX;
             }
 
@@ -260,25 +366,34 @@ document.addEventListener(
     }
 );
 
+
+/* 일시정지 버튼 */
 pauseButton.addEventListener(
     "click",
     function() {
+
         togglePause();
     }
 );
 
+
+/* 게임 시작 버튼 */
 startButton.addEventListener(
     "click",
     function() {
+
         startGame();
     }
 );
 
+
+/* 화면 크기 변경 */
 window.addEventListener(
     "resize",
     function() {
 
         if (!gameRunning) {
+
             return;
         }
 
@@ -309,17 +424,21 @@ window.addEventListener(
     }
 );
 
+
+/* 탭을 벗어나면 자동 일시정지 */
 document.addEventListener(
     "visibilitychange",
     function() {
 
         if (!gameRunning) {
+
             return;
         }
 
         if (document.hidden) {
 
             if (!gamePaused) {
+
                 togglePause();
             }
 
@@ -333,3 +452,4 @@ document.addEventListener(
         }
     }
 );
+
